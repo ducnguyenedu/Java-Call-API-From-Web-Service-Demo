@@ -1,6 +1,7 @@
 package callapi.demo;
 
-import java.util.HashMap;
+import callapi.demo.enity.HttpObject;
+import com.google.gson.Gson;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,10 +14,8 @@ public class Main {
                 "}";
         String respone = apiHelper.Post("auth/login", input);
         System.out.println(respone);
-        HashMap<String, String> JsonMap = apiHelper.toJsonMap(respone);
-        for (String key : JsonMap.keySet()) {
-            String value = JsonMap.get(key).toString();
-            System.out.println(key + " " + value);
-        }
+        Gson g = new Gson();
+        HttpObject s = g.fromJson(respone, HttpObject.class);
+        System.out.println(s);
     }
 }

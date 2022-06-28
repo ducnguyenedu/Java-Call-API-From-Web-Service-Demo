@@ -10,9 +10,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.StringTokenizer;
-
 public class APIHelper {
     private String BaseUrl;
 
@@ -70,13 +67,5 @@ public class APIHelper {
         return respone;
     }
 
-    HashMap<String, String> toJsonMap(String JSON) {
-        HashMap<String, String> JsonMap = new HashMap<>();
-        StringTokenizer st = new StringTokenizer(JSON, "\"{}:,");
-        while (st.hasMoreTokens()) {
-            JsonMap.put(st.nextToken(), st.nextToken());
-        }
-        return JsonMap;
-    }
 
 }
