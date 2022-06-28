@@ -10,7 +10,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 public class APIHelper {
     private String BaseUrl;
@@ -25,49 +26,57 @@ public class APIHelper {
     }
 
 
-    public String Post(String URL, String BODY)  {
-        String respone="";
+    public String Post(String URL, String BODY) {
+        String respone = "";
         try {
-        /*
-         * Open an HTTP Connection to the Logon.ashx page
-         */
-        HttpURLConnection conn = (HttpURLConnection) ((new URL(BaseUrl + URL).openConnection()));
+            /*
+             * Open an HTTP Connection to the Logon.ashx page
+             */
+            HttpURLConnection conn = (HttpURLConnection) ((new URL(BaseUrl + URL).openConnection()));
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
-
 
 
             OutputStream os = conn.getOutputStream();
             os.write(BODY.getBytes());
             os.flush();
 
-            if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + conn.getResponseCode());
-            }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
-
             String output;
-            System.out.println("Output from Server .... \n");
-            while ((output = br.readLine()) != null) {
-               respone=respone+output;
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        (conn.getErrorStream())));
+                while ((output = br.readLine()) != null) {
+                    respone = respone + output;
+                }
+            } else {
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        (conn.getInputStream())));
+                while ((output = br.readLine()) != null) {
+                    respone = respone + output;
+                }
             }
-
             conn.disconnect();
 
         } catch (MalformedURLException e) {
 
             e.printStackTrace();
-            return "Hi I am Here"+ e;
+            return "Hi I am Here" + e;
         } catch (IOException e) {
 
             e.printStackTrace();
-            return "Hi I am Here"+ e;
+            return "Hi I am Here" + e;
         }
         return respone;
+    }
+
+    HashMap<String, String> toJsonMap(String JSON) {
+        HashMap<String, String> JsonMap = new HashMap<>();
+        StringTokenizer st = new StringTokenizer(JSON, "\"{}:,");
+        while (st.hasMoreTokens()) {
+            JsonMap.put(st.nextToken(), st.nextToken());
+        }
+        return JsonMap;
     }
 
 }
