@@ -26,7 +26,7 @@ public class APIHelper {
 
 
     public String Post(String URL, String BODY)  {
-        String output;
+        String respone="";
         try {
         /*
          * Open an HTTP Connection to the Logon.ashx page
@@ -50,10 +50,10 @@ public class APIHelper {
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
 
-
+            String output;
             System.out.println("Output from Server .... \n");
             while ((output = br.readLine()) != null) {
-                System.out.println(output);
+               respone=respone+output;
             }
 
             conn.disconnect();
@@ -67,7 +67,7 @@ public class APIHelper {
             e.printStackTrace();
             return "Hi I am Here"+ e;
         }
-        return "Hi I am Here"+ output;
+        return respone;
     }
 
 }
