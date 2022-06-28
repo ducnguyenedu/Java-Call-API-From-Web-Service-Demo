@@ -6,6 +6,7 @@ package callapi.demo.config;
 public class ConfigenvException extends RuntimeException {
     /**
      * Create a dotenv runtime exception with the specified detail message
+     *
      * @param message the detail message
      */
     public ConfigenvException(String message) {
@@ -14,6 +15,7 @@ public class ConfigenvException extends RuntimeException {
 
     /**
      * Creates a dotenv runtime exception
+     *
      * @param cause the cause
      */
     public ConfigenvException(Throwable cause) {

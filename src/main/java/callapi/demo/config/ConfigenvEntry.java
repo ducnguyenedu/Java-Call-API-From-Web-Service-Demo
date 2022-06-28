@@ -1,7 +1,6 @@
 package callapi.demo.config;
 
 
-
 /**
  * A key value pair representing an environment variable and its value
  */
@@ -12,7 +11,8 @@ public class ConfigenvEntry {
 
     /**
      * Creates a new dotenv entry using the provided key and value
-     * @param key the dotenv entry name
+     *
+     * @param key   the dotenv entry name
      * @param value the dotenv entry value
      */
     public ConfigenvEntry(String key, String value) {
@@ -22,6 +22,7 @@ public class ConfigenvEntry {
 
     /**
      * Returns the key for the {@link ConfigenvEntry}
+     *
      * @return the key for the {@link ConfigenvEntry}
      */
     public String getKey() {
@@ -30,6 +31,7 @@ public class ConfigenvEntry {
 
     /**
      * Returns the value for the {@link ConfigenvEntry}
+     *
      * @return the value for the {@link ConfigenvEntry}
      */
     public String getValue() {
@@ -38,6 +40,6 @@ public class ConfigenvEntry {
 
     @Override
     public String toString() {
-        return key+"="+value;
+        return key + "=" + value;
     }
 }

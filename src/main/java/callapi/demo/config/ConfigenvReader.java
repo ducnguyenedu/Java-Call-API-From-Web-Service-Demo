@@ -1,7 +1,6 @@
 package callapi.demo.config;
 
 
-
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystems;
@@ -20,8 +19,9 @@ public class ConfigenvReader {
 
     /**
      * Creates a dotenv reader
+     *
      * @param directory the directory containing the .env file
-     * @param filename the file name of the .env file e.g. .env
+     * @param filename  the file name of the .env file e.g. .env
      */
     public ConfigenvReader(String directory, String filename) {
         this.directory = directory;
@@ -30,9 +30,10 @@ public class ConfigenvReader {
 
     /**
      * (Internal) Reads the .env file
+     *
      * @return a list containing the contents of each line in the .env file
      * @throws ConfigenvException if a dotenv error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException        if an I/O error occurs
      */
     public List<String> read() throws ConfigenvException, IOException {
         String dir = directory

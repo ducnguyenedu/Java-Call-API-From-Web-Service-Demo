@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.*;
 
 /**
  * Builds and loads and {@link Configenv} instance.
+ *
  * @see Configenv#configure()
  */
 public class ConfigenvBuilder {
@@ -17,6 +18,7 @@ public class ConfigenvBuilder {
 
     /**
      * Sets the directory containing the .env file.
+     *
      * @param path the directory containing the .env file
      * @return this {@link ConfigenvBuilder}
      */
@@ -24,8 +26,10 @@ public class ConfigenvBuilder {
         this.directoryPath = path;
         return this;
     }
+
     /**
      * Sets the name of the .env file. The default is .env.
+     *
      * @param name the filename
      * @return this {@link ConfigenvBuilder}
      */
@@ -36,6 +40,7 @@ public class ConfigenvBuilder {
 
     /**
      * Does not throw an exception when .env is missing.
+     *
      * @return this {@link ConfigenvBuilder}
      */
     public ConfigenvBuilder ignoreIfMissing() {
@@ -45,6 +50,7 @@ public class ConfigenvBuilder {
 
     /**
      * Does not throw an exception when .env is malformed.
+     *
      * @return this {@link ConfigenvBuilder}
      */
     public ConfigenvBuilder ignoreIfMalformed() {
@@ -54,6 +60,7 @@ public class ConfigenvBuilder {
 
     /**
      * Sets each environment variable as system properties.
+     *
      * @return this {@link ConfigenvBuilder}
      */
     public ConfigenvBuilder systemProperties() {
@@ -63,6 +70,7 @@ public class ConfigenvBuilder {
 
     /**
      * Load the contents of .env into the virtual environment.
+     *
      * @return a new {@link Configenv} instance
      * @throws ConfigenvException when an error occurs
      */
@@ -83,16 +91,17 @@ public class ConfigenvBuilder {
         private final Set<ConfigenvEntry> set;
         private final Set<ConfigenvEntry> setInFile;
         private final Map<String, String> envVarsInFile;
+
         public DotenvImpl(List<ConfigenvEntry> envVars) {
             this.envVarsInFile = envVars.stream().collect(toMap(ConfigenvEntry::getKey, ConfigenvEntry::getValue));
             this.envVars = new HashMap<>(this.envVarsInFile);
             System.getenv().forEach(this.envVars::put);
 
-            this.set =this.envVars.entrySet().stream()
+            this.set = this.envVars.entrySet().stream()
                     .map(it -> new ConfigenvEntry(it.getKey(), it.getValue()))
                     .collect(collectingAndThen(toSet(), Collections::unmodifiableSet));
 
-            this.setInFile =this.envVarsInFile.entrySet().stream()
+            this.setInFile = this.envVarsInFile.entrySet().stream()
                     .map(it -> new ConfigenvEntry(it.getKey(), it.getValue()))
                     .collect(collectingAndThen(toSet(), Collections::unmodifiableSet));
         }

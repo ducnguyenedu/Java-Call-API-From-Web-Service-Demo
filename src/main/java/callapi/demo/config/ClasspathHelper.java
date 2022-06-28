@@ -1,7 +1,6 @@
 package callapi.demo.config;
 
 
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class ClasspathHelper {
         }
 
         if (inputStream == null) {
-            throw new ConfigenvException("Could not find "+location+" on the classpath");
+            throw new ConfigenvException("Could not find " + location + " on the classpath");
         }
         Scanner scanner = new Scanner(inputStream, "utf-8");
         List<String> lines = new ArrayList<>();

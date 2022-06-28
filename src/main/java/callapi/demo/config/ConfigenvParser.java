@@ -1,7 +1,6 @@
 package callapi.demo.config;
 
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +25,9 @@ public class ConfigenvParser {
 
     /**
      * Creates a dotenv parser
-     * @param reader the dotenv reader
-     * @param throwIfMissing if true, throws when the .env file is missing
+     *
+     * @param reader           the dotenv reader
+     * @param throwIfMissing   if true, throws when the .env file is missing
      * @param throwIfMalformed if true, throws when the .env file is malformed
      */
     public ConfigenvParser(ConfigenvReader reader, boolean throwIfMissing, boolean throwIfMalformed) {
@@ -36,8 +36,23 @@ public class ConfigenvParser {
         this.throwIfMalformed = throwIfMalformed;
     }
 
+    private static boolean matches(String regex, String text) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        return matcher.matches();
+    }
+
+    private static ConfigenvEntry matchEntry(String regex, String text) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        boolean result = matcher.matches();
+        if (!result || matcher.groupCount() < 3) return null;
+        return new ConfigenvEntry(matcher.group(1), matcher.group(3));
+    }
+
     /**
      * (Internal) parse the .env file
+     *
      * @return a list of DotenvEntries
      * @throws ConfigenvException if an error is encountered during the parse
      */
@@ -49,7 +64,7 @@ public class ConfigenvParser {
 
             ConfigenvEntry entry = parseLine.apply(l);
             if (entry == null) {
-                if (throwIfMalformed) throw new ConfigenvException("Malformed entry "+ l);
+                if (throwIfMalformed) throw new ConfigenvException("Malformed entry " + l);
                 continue;
             }
             String key = entry.getKey();
@@ -73,22 +88,8 @@ public class ConfigenvParser {
     private String normalizeValue(String value) {
         String tr = value.trim();
         return isQuoted.apply(tr)
-                ? tr.substring(1, value.length() -1)
+                ? tr.substring(1, value.length() - 1)
                 : tr;
-    }
-
-    private static boolean matches(String regex, String text) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        return matcher.matches();
-    }
-
-    private static ConfigenvEntry matchEntry(String regex, String text) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        boolean result = matcher.matches();
-        if (!result || matcher.groupCount() < 3) return null;
-        return new ConfigenvEntry(matcher.group(1), matcher.group(3));
     }
 
     private boolean isBlank(String s) {
