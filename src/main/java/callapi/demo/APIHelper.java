@@ -3,7 +3,9 @@ package callapi.demo;
 
 import callapi.demo.config.Configenv;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -22,53 +24,50 @@ public class APIHelper {
         this.BaseUrl = configenv.get("API_KEY");
     }
 
-    public String Login() throws MalformedURLException, IOException {
+
+    public String Post(String URL, String BODY)  {
+        String output;
+        try {
         /*
          * Open an HTTP Connection to the Logon.ashx page
          */
-        HttpURLConnection httpcon = (HttpURLConnection) ((new URL(BaseUrl + "Logon.ashx").openConnection()));
-        httpcon.setDoOutput(true);
-        httpcon.setRequestProperty("Content-Type", "application/json");
-        httpcon.setRequestProperty("Accept", "application/json");
-        httpcon.setRequestMethod("POST");
-        httpcon.connect();
-        /*
-         * Output user credentials over HTTP Output Stream
-         */
-        byte[] outputBytes = "{'username': 'sysadmin', 'password':'apple'}".getBytes("UTF-8");
-        OutputStream os = httpcon.getOutputStream();
-        os.write(outputBytes);
-        os.close();
-        /*
-         * Call Function setCookie and pass the HttpUrlConnection. Set Function
-         * will return a Cookie String used to authenticate user.
-         */
-        return setCookie(httpcon);
-    }
+        HttpURLConnection conn = (HttpURLConnection) ((new URL(BaseUrl + URL).openConnection()));
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
 
-    public String setCookie(HttpURLConnection httpcon) {
-        /*
-         * Process the HTTP Response Cookies from successful credentials
-         */
-        String headerName;
-        ArrayList<String> cookies = new ArrayList<String>();
-        for (int i = 1; (headerName = httpcon.getHeaderFieldKey(i)) != null; i++) {
-            if (headerName.equals("Set-Cookie") && httpcon.getHeaderField(i) != "null") {
-                cookies.add(httpcon.getHeaderField(i));
+
+
+            OutputStream os = conn.getOutputStream();
+            os.write(BODY.getBytes());
+            os.flush();
+
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
             }
-        }
-        httpcon.disconnect();
-        /*
-         * Filter cookies, create Session_ID Cookie
-         */
-        String cookieName = cookies.get(0);
-        String cookie2 = cookies.get(1);
-        String cookie1 = cookieName.substring(cookieName.indexOf("="), cookieName.indexOf(";") + 2);
-        cookie2 = cookie2.substring(0, cookie2.indexOf(";"));
-        cookieName = cookieName.substring(0, cookieName.indexOf("="));
-        String cookie = cookieName + cookie1 + cookie2;
-        return cookie;
-    }
 
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+
+            System.out.println("Output from Server .... \n");
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+            }
+
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+
+            e.printStackTrace();
+            return "Hi I am Here"+ e;
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            return "Hi I am Here"+ e;
+        }
+        return "Hi I am Here"+ output;
+    }
 
 }
